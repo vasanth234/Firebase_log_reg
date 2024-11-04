@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import React from 'react'
+import {BrowserRouter as Router,Routes ,Route, Navigate} from 'react-router-dom'
+import Register from './Components/Register'
+import Login from './Components/Login'
+import {ToastContainer} from 'react-toastify';
+import Profile from './Components/Profile';
+import { auth } from './Components/firebase';
+import {useState,useEffect} from 'react'
+import ForgotPassword from './Components/ForgotPassword';
+import Wikipedia from './Components/Wikipedia';
+const App = () => {
+  const [user,setUser]=useState();
+  useEffect(()=>{
+    auth.onAuthStateChanged((user)=>{
+      setUser(user)
+    }
+    )
+  })
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Router>
+        <div className='App'>
+          <div className='auth-wrapper'>
+            <div className='auth-inner'>
+              <Routes>
+                <Route path='/' element={user ? <Navigate to='/profile'/> :<Login/>}/>
+                <Route path='/Login' element={<Login/>}/>
+                <Route path='/Register' element={<Register/>}/>
+                <Route path='/profile' element={<Profile/>}/>
+                <Route path='/forgot-password' element={<ForgotPassword/>}/>
+                <Route path='/wikipedia' element={<Wikipedia/>}/>
+              </Routes>
+              <ToastContainer/>
+            </div>
+
+          </div>
+        </div>
+      </Router>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
